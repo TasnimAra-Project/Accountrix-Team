@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #dbeafe;
+            --secondary-color: #3b82f6;
+            --sidebar-width: 280px;
+        }
+
+        /* Theme Color Variables */
+        .theme-blue {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #dbeafe;
+            --secondary-color: #3b82f6;
+        }
+
+        .theme-pink {
+            --primary-color: #ec4899;
+            --primary-dark: #be185d;
+            --primary-light: #fce7f3;
+            --secondary-color: #f472b6;
+        }
+
+        .theme-purple {
+            --primary-color: #8b5cf6;
+            --primary-dark: #6d28d9;
+            --primary-light: #ede9fe;
+            --secondary-color: #a78bfa;
+        }
+
+        .theme-green {
+            --primary-color: #10b981;
+            --primary-dark: #047857;
+            --primary-light: #d1fae5;
+            --secondary-color: #34d399;
+        }
+
+        .theme-orange {
+            --primary-color: #f59e0b;
+            --primary-dark: #d97706;
+            --primary-light: #fef3c7;
+            --secondary-color: #fbbf24;
+        }
+
+        .theme-red {
+            --primary-color: #ef4444;
+            --primary-dark: #dc2626;
+            --primary-light: #fee2e2;
+            --secondary-color: #f87171;
+        }
+
+        .theme-cyan {
+            --primary-color: #06b6d4;
+            --primary-dark: #0891b2;
+            --primary-light: #cffafe;
+            --secondary-color: #22d3ee;
+        }
+
+        .theme-indigo {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #e0e7ff;
+            --secondary-color: #818cf8;
+        }
+
+        /* Theme transition */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background: #f8fafc;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.1);
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .view-btn {
+            background: transparent;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .view-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .view-btn.active {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Theme Picker Styles */
+        .theme-picker {
+            position: relative;
+            margin-right: 1rem;
+        }
+
+        .theme-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .theme-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .theme-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            padding: 8px;
+            min-width: 180px;
+            z-index: 1000;
+            display: none;
+            border: 1px solid #e5e7eb;
+        }
+
+        .theme-dropdown-menu.show {
+            display: block;
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #374151;
+        }
+
+        .theme-option:hover {
+            background: #f3f4f6;
+        }
+
+        .theme-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+
+        .theme-swatch-blue { background: #2563eb; }
+        .theme-swatch-pink { background: #ec4899; }
+        .theme-swatch-purple { background: #8b5cf6; }
+        .theme-swatch-green { background: #10b981; }
+        .theme-swatch-orange { background: #f59e0b; }
+        .theme-swatch-red { background: #ef4444; }
+        .theme-swatch-cyan { background: #06b6d4; }
+        .theme-swatch-indigo { background: #6366f1; }
+
+        .theme-option.surprise {
+            border-top: 1px solid #e5e7eb;
+            margin-top: 4px;
+            padding-top: 14px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .theme-option.surprise:hover {
+            background: var(--primary-light);
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .user-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 8px;
+            min-width: 180px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+
+        .dropdown-menu a:hover {
+            background: #f3f4f6;
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            display: flex;
+            height: calc(100vh - 65px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sidebar-header h3 {
+            margin: 0 0 16px 0;
+            color: #111827;
+            font-size: 1.2rem;
+        }
+
+        .teams-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .team-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .team-item:hover {
+            background: #f9fafb;
+        }
+
+        .team-item.active {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .team-item h4 {
+            margin: 0 0 8px 0;
+            color: #111827;
+            font-size: 1rem;
+        }
+
+        .team-item p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .team-badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Main Panel */
+        .main-panel {
+            flex: 1;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .no-selection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #9ca3af;
+        }
+
+        .no-selection i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .no-selection h3 {
+            margin: 0 0 8px 0;
+            color: #6b7280;
+        }
+
+        /* Project Dashboard */
+        .project-dashboard {
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-info h2 {
+            margin: 0 0 8px 0;
+            color: #111827;
+            font-size: 1.75rem;
+        }
+
+        .project-info p {
+            margin: 0;
+            color: #6b7280;
+        }
+
+        .project-actions .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .project-actions .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* New Dashboard Layout */
+        .dashboard-header-new {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-layout-new {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .dashboard-main-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .dashboard-card-large {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card-large h3 {
+            margin: 0 0 1.5rem 0;
+            color: #111827;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dashboard-card-large h3 i {
+            color: var(--primary-color);
+        }
+
+        /* Progress Stats */
+        .progress-bar-large {
+            background: #e5e7eb;
+            height: 16px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-text-large {
+            text-align: center;
+            color: #111827;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .deadlines-list-large {
+            max-height: none;
+        }
+
+        /* Right Sidebar */
+        .dashboard-sidebar-right {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .sidebar-tab-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .sidebar-tab-btn:hover {
+            color: var(--primary-color);
+            background: #f3f4f6;
+        }
+
+        .sidebar-tab-btn.active {
+            color: var(--primary-color);
+            background: white;
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .sidebar-tab-btn i {
+            font-size: 1.1rem;
+        }
+
+        .sidebar-tab-content {
+            display: none;
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .sidebar-tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Tasks in Sidebar */
+        .task-filters-compact {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 1rem;
+            padding: 4px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .filter-btn-compact {
+            flex: 1;
+            padding: 6px 8px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.3s;
+        }
+
+        .filter-btn-compact:hover {
+            background: #e5e7eb;
+        }
+
+        .filter-btn-compact.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tasks-list-sidebar {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .task-item-sidebar {
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .task-item-sidebar:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+        }
+
+        .task-item-sidebar h5 {
+            margin: 0 0 6px 0;
+            font-size: 0.875rem;
+            color: #111827;
+        }
+
+        .task-item-sidebar p {
+            margin: 0 0 8px 0;
+            font-size: 0.75rem;
+            color: #6b7280;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .task-item-sidebar-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+
+        /* Chat in Sidebar */
+        .chat-messages-sidebar {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            max-height: none;
+        }
+
+        .chat-input-sidebar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input-sidebar input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon-only {
+            padding: 10px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-icon-only:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Notes in Sidebar */
+        .notes-files-toggle {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 1rem;
+            background: #f9fafb;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .notes-toggle-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .notes-toggle-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .notes-toggle-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .notes-textarea-sidebar {
+            width: 100%;
+            height: 250px;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .notes-status-small {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+        .btn-small-compact {
+            padding: 6px 12px;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .btn-small-compact:hover {
+            background: var(--primary-dark);
+        }
+
+        .file-upload-compact {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .file-hint-small {
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+
+        .files-list-sidebar {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Quick Links Grid */
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .quick-link-btn {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .quick-link-btn:hover {
+            border-color: var(--primary-blue);
+            background: white;
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .quick-link-btn i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .quick-link-btn span {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-link-btn p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        /* Old Dashboard Grid - Keep for compatibility */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card h3 {
+            margin: 0 0 1.5rem 0;
+            color: #111827;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dashboard-card h3 i {
+            color: var(--primary-color);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.875rem;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -10px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Notes */
+        .notes-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .notes-status {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        /* Files */
+        .file-upload-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .file-hint {
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }
+
+        .files-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+
+        .file-item:hover {
+            border-color: var(--primary-blue);
+            background: #f9fafb;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .file-details h5 {
+            margin: 0 0 4px 0;
+            color: #111827;
+            font-size: 0.875rem;
+        }
+
+        .file-details p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Organized Tasks */
+        .organized-task-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .org-task-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-blue);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .org-task-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .org-task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .org-task-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0 0 8px 0;
+        }
+
+        .org-task-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 12px;
+        }
+
+        .org-task-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .assign-dropdown {
+            padding: 6px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 20px;
+        }
+
+        .submission-item {
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--primary-blue);
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .submission-author {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .submission-time {
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }
+
+        .submission-text {
+            color: #374151;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* Progress Timeline */
+        .timeline {
+            padding: 1rem 0;
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        /* Task Filters */
+        .task-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        /* Tasks List */
+        .tasks-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .task-item-clean {
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .task-item-clean:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .task-header h4 {
+            margin: 0;
+            color: #111827;
+            font-size: 1rem;
+        }
+
+        .task-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .task-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .task-status.in_progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .task-status.completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .task-status.postponed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .task-body {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 12px;
+        }
+
+        .task-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .task-footer .task-meta {
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }
+
+        .task-actions-inline {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-info {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        /* Deadlines */
+        .deadlines-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .deadline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-left: 4px solid var(--primary-blue);
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .deadline-item h5 {
+            margin: 0 0 4px 0;
+            color: #111827;
+            font-size: 0.875rem;
+        }
+
+        .deadline-item p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+
+        .deadline-date {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Chat */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            max-height: 250px;
+        }
+
+        .message-item {
+            margin-bottom: 1rem;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-blue);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            color: #111827;
+            font-size: 0.875rem;
+        }
+
+        .teacher-badge-inline {
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        .message-time {
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }
+
+        .message-text {
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .chat-input .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .chat-input .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Swipe View */
+        #swipe-view {
+            padding: 2rem;
+            display: none;
+        }
+
+        .swipe-container {
+            position: relative;
+            max-width: 500px;
+            margin: 50px auto;
+            height: 600px;
+        }
+
+        .task-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            cursor: grab;
+            transition: transform 0.3s, opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-card.swiping {
+            cursor: grabbing;
+        }
+
+        .task-card h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .task-card .task-description {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .task-card .task-meta {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .task-card .task-meta p {
+            margin-bottom: 8px;
+            color: #6b7280;
+        }
+
+        .swipe-hints {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .swipe-hint {
+            text-align: center;
+        }
+
+        .swipe-hint .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .swipe-hint p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .no-tasks {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #9ca3af;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tasks-card, .chat-card {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .view-btn span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Student Dashboard</span>
+        </div>
+        <div class="nav-controls">
+            <div class="view-toggle">
+                <button id="clean-view-btn" class="view-btn active">
+                    <i class="fas fa-th-large"></i> <span>Dashboard</span>
+                </button>
+                <button id="tasks-org-view-btn" class="view-btn">
+                    <i class="fas fa-tasks"></i> <span>All Tasks</span>
+                </button>
+                <button id="swipe-view-btn" class="view-btn">
+                    <i class="fas fa-layer-group"></i> <span>Swipe View</span>
+                </button>
+            </div>
+            
+            <!-- Theme Picker -->
+            <div class="theme-picker">
+                <button id="theme-dropdown" class="theme-btn">
+                    <i class="fas fa-palette"></i>
+                    <span id="current-theme">Blue</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div id="theme-dropdown-menu" class="theme-dropdown-menu">
+                    <div class="theme-option" data-theme="blue">
+                        <div class="theme-swatch theme-swatch-blue"></div>
+                        <span>Blue</span>
+                    </div>
+                    <div class="theme-option" data-theme="pink">
+                        <div class="theme-swatch theme-swatch-pink"></div>
+                        <span>Pink</span>
+                    </div>
+                    <div class="theme-option" data-theme="purple">
+                        <div class="theme-swatch theme-swatch-purple"></div>
+                        <span>Purple</span>
+                    </div>
+                    <div class="theme-option" data-theme="green">
+                        <div class="theme-swatch theme-swatch-green"></div>
+                        <span>Green</span>
+                    </div>
+                    <div class="theme-option" data-theme="orange">
+                        <div class="theme-swatch theme-swatch-orange"></div>
+                        <span>Orange</span>
+                    </div>
+                    <div class="theme-option" data-theme="red">
+                        <div class="theme-swatch theme-swatch-red"></div>
+                        <span>Red</span>
+                    </div>
+                    <div class="theme-option" data-theme="cyan">
+                        <div class="theme-swatch theme-swatch-cyan"></div>
+                        <span>Cyan</span>
+                    </div>
+                    <div class="theme-option" data-theme="indigo">
+                        <div class="theme-swatch theme-swatch-indigo"></div>
+                        <span>Indigo</span>
+                    </div>
+                    <div class="theme-option surprise" data-theme="surprise">
+                        <i class="fas fa-random"></i>
+                        <span>Surprise Me!</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-menu">
+                <button id="user-dropdown" class="user-btn">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="user-name">Student</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div id="user-dropdown-menu" class="dropdown-menu">
+                    <a href="#" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Clean Layout View -->
+    <div id="clean-view" class="main-content">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-users"></i> My Teams</h3>
+            </div>
+            <div id="teams-list" class="teams-list">
+                <!-- Teams will be loaded here -->
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <div id="no-project-selected" class="no-selection">
+                <i class="fas fa-folder-open"></i>
+                <h3>Select a team to get started</h3>
+                <p>Choose a team from the sidebar to view tasks and collaborate</p>
+            </div>
+
+                <div id="project-dashboard" class="project-dashboard" style="display: none;">
+                    <!-- Header -->
+                    <div class="dashboard-header-new">
+                        <div class="project-info">
+                            <h2 id="project-title">Team Name</h2>
+                            <p id="project-description">Class Name • Teacher Name</p>
+                        </div>
+                        <button id="add-task-btn" class="btn btn-primary btn-small">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </div>
+
+                    <!-- Main Dashboard Layout -->
+                    <div class="dashboard-layout-new">
+                        <!-- Main Content Area (Timeline & Deadlines) -->
+                        <div class="dashboard-main-area">
+                            <!-- Progress Timeline -->
+                            <div class="dashboard-card-large">
+                                <h3><i class="fas fa-chart-line"></i> Team Progress</h3>
+                                <div class="timeline">
+                                    <div class="progress-bar-large">
+                                        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                                    </div>
+                                    <div id="progress-text" class="progress-text-large">0% Complete</div>
+                                </div>
+                                <div class="progress-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="total-tasks-count">0</div>
+                                        <div class="stat-label">Total Tasks</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="completed-tasks-count">0</div>
+                                        <div class="stat-label">Completed</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="pending-tasks-count">0</div>
+                                        <div class="stat-label">Pending</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="my-tasks-stat">0</div>
+                                        <div class="stat-label">Assigned to Me</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upcoming Deadlines -->
+                            <div class="dashboard-card-large">
+                                <h3><i class="fas fa-calendar-alt"></i> Upcoming Deadlines</h3>
+                                <div id="deadlines-list" class="deadlines-list-large">
+                                    <div class="empty-state">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <p>No upcoming deadlines</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quick Links Section -->
+                            <div class="dashboard-card-large">
+                                <h3><i class="fas fa-compass"></i> Quick Access</h3>
+                                <div class="quick-links-grid">
+                                    <button class="quick-link-btn" onclick="switchView('tasks-org')">
+                                        <i class="fas fa-tasks"></i>
+                                        <span>All Tasks</span>
+                                        <p>View organized tasks</p>
+                                    </button>
+                                    <button class="quick-link-btn" onclick="showNotesPage()">
+                                        <i class="fas fa-sticky-note"></i>
+                                        <span>Team Notes</span>
+                                        <p>Collaborative notes</p>
+                                    </button>
+                                    <button class="quick-link-btn" onclick="showChatPage()">
+                                        <i class="fas fa-comments"></i>
+                                        <span>Group Chat</span>
+                                        <p>Team conversation</p>
+                                    </button>
+                                    <button class="quick-link-btn" onclick="showFilesPage()">
+                                        <i class="fas fa-folder"></i>
+                                        <span>Team Files</span>
+                                        <p>Upload & download</p>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <!-- Notes Page -->
+    <div id="notes-page" style="display: none; padding: 2rem; background: #f8fafc; min-height: calc(100vh - 65px);">
+        <div style="max-width: 1000px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: #111827; margin: 0;">
+                    <i class="fas fa-sticky-note"></i> Team Notes
+                </h2>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="openNewNoteModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Note
+                    </button>
+                    <button onclick="switchView('clean')" class="btn btn-secondary btn-small">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Notes List -->
+            <div id="notes-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Notes will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- New Note Modal -->
+    <div id="new-note-modal" class="modal" style="display: none;">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-sticky-note"></i> Create New Note</h3>
+                <button onclick="closeNewNoteModal()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="new-note-form">
+                    <div class="form-group">
+                        <label>Note Title:</label>
+                        <input type="text" id="note-title" required style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;" placeholder="Enter note title...">
+                    </div>
+                    <div class="form-group">
+                        <label>Note Content:</label>
+                        <textarea id="note-content" rows="8" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; resize: vertical;" placeholder="Write your note content here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Attach Files (Optional):</label>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <input type="file" id="note-file-input" multiple style="display: none;" accept="*/*">
+                            <button type="button" onclick="document.getElementById('note-file-input').click()" class="btn btn-secondary btn-small">
+                                <i class="fas fa-paperclip"></i> Choose Files
+                            </button>
+                            <span id="note-selected-files-info" style="color: #6b7280; font-size: 0.875rem;">No files selected</span>
+                        </div>
+                        <div id="note-selected-files-list" style="margin-top: 8px;"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeNewNoteModal()" class="btn btn-secondary">Cancel</button>
+                <button onclick="createNewNote()" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Create Note
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Note Modal -->
+    <div id="edit-note-modal" class="modal" style="display: none;">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Note</h3>
+                <button onclick="closeEditNoteModal()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-note-form">
+                    <input type="hidden" id="edit-note-id">
+                    <div class="form-group">
+                        <label>Note Title:</label>
+                        <input type="text" id="edit-note-title" required style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;" placeholder="Enter note title...">
+                    </div>
+                    <div class="form-group">
+                        <label>Note Content:</label>
+                        <textarea id="edit-note-content" rows="8" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; resize: vertical;" placeholder="Write your note content here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Attach Files (Optional):</label>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <input type="file" id="edit-note-file-input" multiple style="display: none;" accept="*/*">
+                            <button type="button" onclick="document.getElementById('edit-note-file-input').click()" class="btn btn-secondary btn-small">
+                                <i class="fas fa-paperclip"></i> Add Files
+                            </button>
+                            <span id="edit-note-selected-files-info" style="color: #6b7280; font-size: 0.875rem;">No files selected</span>
+                        </div>
+                        <div id="edit-note-selected-files-list" style="margin-top: 8px;"></div>
+                        <div id="edit-note-existing-files" style="margin-top: 12px;"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeEditNoteModal()" class="btn btn-secondary">Cancel</button>
+                <button onclick="updateNote()" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Note
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Page -->
+    <div id="chat-page" style="display: none; padding: 2rem; background: #f8fafc; min-height: calc(100vh - 65px);">
+        <div style="max-width: 1000px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: #111827; margin: 0;">
+                    <i class="fas fa-comments"></i> Group Chat
+                </h2>
+                <button onclick="switchView('clean')" class="btn btn-secondary btn-small">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
+            </div>
+            
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div id="chat-messages" class="chat-messages" style="height: 500px; overflow-y: auto; padding: 1rem; background: #f9fafb; border-radius: 8px; margin-bottom: 1rem;">
+                    <!-- Messages will be loaded here -->
+                </div>
+                <div class="chat-input" style="display: flex; gap: 12px;">
+                    <input type="text" id="message-input" placeholder="Type a message..." maxlength="500" style="flex: 1; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+                    <button id="send-message-btn" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Files Page -->
+    <div id="files-page" style="display: none; padding: 2rem; background: #f8fafc; min-height: calc(100vh - 65px);">
+        <div style="max-width: 1000px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: #111827; margin: 0;">
+                    <i class="fas fa-folder"></i> Team Files
+                </h2>
+                <button onclick="switchView('clean')" class="btn btn-secondary btn-small">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
+            </div>
+            
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="file-upload-area" style="display: flex; align-items: center; gap: 12px; padding: 1.5rem; background: #f9fafb; border-radius: 8px; margin-bottom: 2rem;">
+                    <input type="file" id="file-input" style="display: none;" accept="*/*">
+                    <button id="upload-file-btn" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Upload File
+                    </button>
+                    <span class="file-hint" style="color: #9ca3af; font-size: 0.875rem;">Max size: 10MB</span>
+                </div>
+                <div id="files-list" class="files-list">
+                    <!-- Files will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks Organization View -->
+    <div id="tasks-org-view" style="display: none; padding: 2rem; background: #f8fafc; min-height: calc(100vh - 65px);">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: #111827; margin: 0;">
+                    <i class="fas fa-tasks"></i> Task Organization
+                </h2>
+                <button onclick="switchView('clean')" class="btn btn-secondary btn-small">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
+            </div>
+            
+            <!-- Team Selector -->
+            <div style="margin-bottom: 2rem; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <label style="font-weight: 600; color: #111827; margin-bottom: 8px; display: block;">Select Team:</label>
+                <select id="org-team-selector" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.875rem;">
+                    <option value="">Choose a team...</option>
+                </select>
+            </div>
+
+            <div id="organized-tasks-content" style="display: none;">
+                <!-- My Tasks -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #111827; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-user" style="color: var(--primary-blue);"></i> My Tasks 
+                        <span id="my-tasks-count" class="badge" style="background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">0</span>
+                    </h3>
+                    <div id="my-tasks-list" class="organized-task-list"></div>
+                </div>
+
+                <!-- Team Tasks -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: #111827; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-users" style="color: #10b981;"></i> Team Tasks (Unassigned)
+                        <span id="team-tasks-count" class="badge" style="background: #10b981; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">0</span>
+                    </h3>
+                    <div id="team-tasks-list" class="organized-task-list"></div>
+                </div>
+
+                <!-- Others' Tasks -->
+                <div>
+                    <h3 style="color: #111827; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-user-friends" style="color: #f59e0b;"></i> Team Members' Tasks
+                        <span id="others-tasks-count" class="badge" style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">0</span>
+                    </h3>
+                    <div id="others-tasks-list" class="organized-task-list"></div>
+                </div>
+            </div>
+
+            <div id="no-team-selected" style="text-align: center; padding: 60px 20px; color: #9ca3af;">
+                <i class="fas fa-arrow-up" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <h3 style="color: #6b7280; margin: 0;">Select a team to view organized tasks</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Swipe View -->
+    <div id="swipe-view" class="main-content" style="display: none;">
+        <div style="padding: 2rem;">
+            <h2 style="text-align: center; color: #111827; margin-bottom: 2rem;">
+                <i class="fas fa-hand-pointer"></i> Swipe Through Your Tasks
+            </h2>
+            <div class="swipe-container" id="swipe-container">
+                <div id="no-tasks-message" class="no-tasks" style="display: none;">
+                    <h2>🎉 All Done!</h2>
+                    <p>No more tasks to swipe through</p>
+                </div>
+            </div>
+            
+            <div class="swipe-hints">
+                <div class="swipe-hint">
+                    <div class="icon">👉</div>
+                    <p>Swipe Right<br><strong>Mark Complete</strong></p>
+                </div>
+                <div class="swipe-hint">
+                    <div class="icon">👈</div>
+                    <p>Swipe Left<br><strong>Postpone</strong></p>
+                </div>
+                <div class="swipe-hint">
+                    <div class="icon">👆</div>
+                    <p>Swipe Up<br><strong>In Progress</strong></p>
+                </div>
+                <div class="swipe-hint">
+                    <div class="icon">👇</div>
+                    <p>Swipe Down<br><strong>Delete</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Detail Modal -->
+    <div id="task-detail-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 id="task-detail-title">Task Details</h2>
+                <button onclick="closeTaskDetailModal()" style="background: none; border: none; font-size: 2rem; cursor: pointer; color: #6b7280;">&times;</button>
+            </div>
+            
+            <div id="task-detail-content"></div>
+            
+            <!-- Submission Section -->
+            <div id="submission-section" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e5e7eb;">
+                <!-- Not Assigned Message (hidden by default) -->
+                <div id="not-assigned-message" style="display: none; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1rem; text-align: center;">
+                    <i class="fas fa-info-circle" style="color: #f59e0b; font-size: 1.5rem; margin-bottom: 8px;"></i>
+                    <p id="not-assigned-text" style="margin: 0; color: #92400e;"></p>
+                </div>
+                
+                <!-- Submission Form (shown when user can submit) -->
+                <div id="submission-form-container">
+                    <h3 style="color: #111827; margin-bottom: 1rem;"><i class="fas fa-paper-plane"></i> Submit Your Work</h3>
+                    
+                    <div class="form-group">
+                        <label>Your Answer/Notes:</label>
+                        <textarea id="submission-text" rows="4" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.875rem;" placeholder="Write your answer or notes here..."></textarea>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Attach Files (Optional):</label>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <input type="file" id="submission-file-input" multiple style="display: none;" accept="*/*">
+                            <button type="button" onclick="document.getElementById('submission-file-input').click()" class="btn btn-secondary btn-small">
+                                <i class="fas fa-paperclip"></i> Choose Files
+                            </button>
+                            <span id="selected-files-info" style="color: #6b7280; font-size: 0.875rem;">No files selected</span>
+                        </div>
+                        <div id="selected-files-list" style="margin-top: 8px;"></div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <button onclick="submitTask()" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Submit
+                        </button>
+                        <button onclick="markComplete()" class="btn btn-success">
+                            <i class="fas fa-check-circle"></i> Mark as Complete
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submissions List -->
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e5e7eb;">
+                <h3 style="color: #111827; margin-bottom: 1rem;"><i class="fas fa-history"></i> Team Submissions</h3>
+                <div id="submissions-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="add-task-modal" class="modal" onclick="closeAddTaskModal()">
+        <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Create New Task</h2>
+                <button class="modal-close" type="button" onclick="closeAddTaskModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-task-form">
+                    <div class="form-group">
+                        <label for="new-task-title">Task Title *</label>
+                        <input type="text" id="new-task-title" required placeholder="Enter task title" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.875rem;">
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="new-task-description">Description</label>
+                        <textarea id="new-task-description" placeholder="Enter task description" rows="4" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.875rem; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="new-task-due-date">Due Date</label>
+                        <input type="date" id="new-task-due-date" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.875rem;">
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="new-task-assign-to">Assign To</label>
+                        <select id="new-task-assign-to" style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.875rem;">
+                            <option value="">Unassigned (Team Task)</option>
+                            <!-- Team members will be loaded here -->
+                        </select>
+                    </div>
+                    
+                    <div class="modal-actions" style="margin-top: 1.5rem; display: flex; gap: 12px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" onclick="closeAddTaskModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Create Task
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="/student-dashboard.js"></script>
+</body>
+</html>
