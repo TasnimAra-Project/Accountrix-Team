@@ -801,6 +801,105 @@ node -e "require('./backend/services/cronService').runProgressNow().then(() => p
 
 ---
 
+## 🚂 Render Deploy
+
+### Prerequisites
+- Render account ([render.com](https://render.com))
+- MySQL database provisioned on Render or external service
+
+### Environment Variables
+
+Set the following environment variables in Render Dashboard:
+
+**Required:**
+```env
+DB_HOST=your-mysql-host
+DB_USER=your-mysql-user
+DB_PASSWORD=your-mysql-password
+DB_NAME=your-database-name
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+NODE_ENV=production
+```
+
+**Optional:**
+```env
+DB_SSL=true  # Enable SSL for external MySQL databases (Render MySQL uses SSL by default)
+```
+
+**Note:** If you're using Render's MySQL service, it provides `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, and `MYSQL_DATABASE`. The app will automatically use these if `DB_*` variables are not set.
+
+### Deployment Steps
+
+1. **Connect Repository to Render**
+   - Go to Render dashboard
+   - Click "New +" → "Web Service"
+   - Connect your GitHub repository (Accountrix-Team)
+   - Render will auto-detect Node.js
+
+2. **Configure Environment Variables**
+   - In Render service settings → Environment
+   - Add all required environment variables listed above
+   - If using Render MySQL, you can reference the database service's variables:
+     - `DB_HOST` → Reference `MYSQL_HOST` from database service
+     - `DB_USER` → Reference `MYSQL_USER` from database service
+     - `DB_PASSWORD` → Reference `MYSQL_PASSWORD` from database service
+     - `DB_NAME` → Reference `MYSQL_DATABASE` from database service
+
+3. **Provision MySQL Database (if not using external)**
+   - In Render dashboard, click "New +" → "PostgreSQL" (or use external MySQL)
+   - **Note:** Render provides PostgreSQL by default, but this app uses MySQL
+   - Options:
+     - Use an external MySQL service (Railway, PlanetScale, etc.)
+     - Or provision MySQL on another platform and connect via `DB_HOST`
+
+4. **Run Database Migrations**
+   - After first deployment, run migrations:
+     - Go to Render service → Shell
+     - Run: `npm run migrate`
+   - Or use Render's one-off command:
+     - Render Dashboard → Your Service → Manual Deploy → Run Command
+     - Command: `npm run migrate`
+
+5. **Deploy**
+   - Render will use `render.yaml` if present, or auto-detect from `package.json`
+   - Start command should be: `npm start`
+   - Build command: `npm ci`
+   - The app will be available at your Render-provided URL
+
+### Architecture
+
+- **Single Host**: Express serves both static frontend files and API endpoints
+- **No CORS Required**: Frontend and API are on same origin
+- **Socket.IO**: Attached directly to HTTP server, works behind Render proxy
+- **File Uploads**: Uses memory storage (multer) - suitable for production
+- **Health Check**: `/healthz` endpoint returns `{ ok: true, version: '2.0.0' }`
+
+### Troubleshooting Render Deploy
+
+**Database connection fails (ECONNREFUSED):**
+1. Verify all database environment variables are set correctly
+2. Check that MySQL service is running and accessible
+3. If using Render MySQL, ensure the database service is in the same region
+4. Check network/firewall settings - Render services in same project can communicate
+5. Verify database name matches exactly (case-sensitive)
+6. Check Render logs for connection errors - they will show which host/port is being used
+
+**Start command error:**
+- Ensure `render.yaml` is in the repository root
+- Or manually set Start Command to `npm start` in Render dashboard
+- Build Command should be `npm ci` (or `npm install`)
+
+**Migrations fail:**
+- Ensure database environment variables are set before running migrations
+- Check that database exists and user has proper permissions
+- Run migrations from Render Shell or via one-off command
+
+**Socket.IO not connecting:**
+- Verify `transports: ['websocket', 'polling']` is set in server.js
+- Check Render logs for Socket.IO connection errors
+
+---
+
 ## 🚂 Railway Deploy
 
 ### Prerequisites

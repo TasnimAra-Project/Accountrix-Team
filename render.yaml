@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: accountrix-team
+    env: node
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        generateValue: true
+      # Database connection - use these if you have a separate MySQL service
+      - key: DB_HOST
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      # Alternative: if using Render's MySQL service, it provides MYSQL_* vars
+      # The app will automatically use MYSQL_* if DB_* are not set
+      - key: JWT_SECRET
+        sync: false
+      # Optional: Enable SSL for external MySQL databases
+      # - key: DB_SSL
+      #   value: "true"
+

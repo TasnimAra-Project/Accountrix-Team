@@ -6,13 +6,15 @@ const socketIo = require('socket.io');
 // Load environment variables
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
-// Fallback environment variables if .env doesn't load properly
-if (!process.env.DB_HOST) process.env.DB_HOST = 'localhost';
-if (!process.env.DB_USER) process.env.DB_USER = 'root';
-if (!process.env.DB_PASSWORD) process.env.DB_PASSWORD = 'zaqmlpP12345@asdf';
-if (!process.env.DB_NAME) process.env.DB_NAME = 'student_teacher_db';
-if (!process.env.JWT_SECRET) process.env.JWT_SECRET = 'your_super_secret_jwt_key_change_this_in_production_12345';
-if (!process.env.PORT) process.env.PORT = '3000';
+// Fallback environment variables (only for development, not production)
+if (process.env.NODE_ENV !== 'production') {
+    if (!process.env.DB_HOST) process.env.DB_HOST = 'localhost';
+    if (!process.env.DB_USER) process.env.DB_USER = 'root';
+    if (!process.env.DB_PASSWORD) process.env.DB_PASSWORD = 'zaqmlpP12345@asdf';
+    if (!process.env.DB_NAME) process.env.DB_NAME = 'student_teacher_db';
+    if (!process.env.JWT_SECRET) process.env.JWT_SECRET = 'your_super_secret_jwt_key_change_this_in_production_12345';
+}
+if (!process.env.PORT) process.env.PORT = '8080';
 
 const authRoutes = require('./routes/auth');
 const teacherRoutes = require('./routes/teacher');
@@ -150,9 +152,9 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'login.html'));
 });
 
-// Start server - bind to 0.0.0.0 for Render
+// Start server - bind to 0.0.0.0 for cloud hosting (Render, Railway, etc.)
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log('Server running on port', PORT);
     
     // Start cron jobs for AI progress tracking
     cronService.start();
