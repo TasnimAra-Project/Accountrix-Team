@@ -490,19 +490,222 @@
     margin-bottom: 4px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .progress-heatmap {
-        grid-template-columns: 1fr;
+/* Responsive Design - Mobile First */
+
+/* Mobile devices (up to 600px) */
+@media (max-width: 600px) {
+    .progress-tracker {
+        padding: 16px;
     }
-    
+
+    .progress-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .progress-header h2 {
+        font-size: 20px;
+    }
+
     .progress-summary {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
+        width: 100%;
     }
-    
+
+    .summary-badge {
+        padding: 8px 14px;
+        font-size: 13px;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .progress-heatmap {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .team-card {
+        padding: 16px;
+    }
+
+    .team-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .team-name {
+        font-size: 16px;
+    }
+
+    .progress-score {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .score-circle {
+        width: 50px;
+        height: 50px;
+    }
+
+    .score-value {
+        font-size: 14px;
+    }
+
+    .score-number {
+        font-size: 20px;
+    }
+
     .metrics-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .metric-item {
+        padding: 8px;
+    }
+
+    .metric-value {
+        font-size: 16px;
+    }
+
+    .metric-label {
+        font-size: 10px;
+    }
+
+    .sparkline-container {
+        height: 30px;
+        margin: 12px 0;
+    }
+
+    .risk-reason {
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    .team-actions {
+        flex-direction: column;
+    }
+
+    .btn-view-details {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+
+    .progress-detail-content {
+        padding: 20px;
+    }
+
+    .progress-detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .historical-chart {
+        padding: 16px;
+    }
+
+    .chart-title {
+        font-size: 14px;
+    }
+
+    .insight-item {
+        padding: 12px;
+        font-size: 13px;
+    }
+}
+
+/* Tablet devices (601px to 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .progress-tracker {
+        padding: 18px;
+    }
+
+    .progress-header h2 {
+        font-size: 22px;
+    }
+
+    .progress-summary {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .progress-heatmap {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .team-card {
+        padding: 18px;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .progress-detail-content {
+        padding: 28px;
+        max-width: 700px;
+    }
+}
+
+/* Laptop/Small Desktop (1025px to 1366px) */
+@media (min-width: 1025px) and (max-width: 1366px) {
+    .progress-heatmap {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .team-card {
+        padding: 20px;
+    }
+
+    .progress-detail-content {
+        max-width: 850px;
+    }
+}
+
+/* Large Desktop (1367px and above) */
+@media (min-width: 1367px) {
+    .progress-heatmap {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .progress-detail-content {
+        max-width: 900px;
+    }
+}
+
+/* Landscape orientation for mobile */
+@media (max-width: 900px) and (orientation: landscape) {
+    .progress-heatmap {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .progress-score {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+/* Touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .btn-view-details {
+        min-height: 44px;
+        padding: 12px 16px;
+    }
+
+    .team-card:hover {
+        transform: none;
+    }
+
+    .team-card:active {
+        transform: scale(0.98);
     }
 }
 

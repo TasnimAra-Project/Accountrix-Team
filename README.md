@@ -801,6 +801,103 @@ node -e "require('./backend/services/cronService').runProgressNow().then(() => p
 
 ---
 
+## 🚂 Railway Deploy
+
+### Prerequisites
+- Railway account ([railway.app](https://railway.app))
+- MySQL database provisioned on Railway or external service
+
+### Environment Variables
+
+Set the following environment variables in Railway:
+
+```env
+DB_HOST=your-mysql-host
+DB_USER=your-mysql-user
+DB_PASSWORD=your-mysql-password
+DB_NAME=your-database-name
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+NODE_ENV=production
+PORT=3000
+```
+
+**Important Notes:**
+- `JWT_SECRET` should be a long, random string for production security
+- `NODE_ENV=production` enables production optimizations
+- `PORT` is automatically set by Railway, but you can override if needed
+- Database credentials are provided when you provision a MySQL service on Railway
+
+### Deployment Steps
+
+1. **Connect Repository to Railway**
+   - Go to Railway dashboard
+   - Click "New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose your AccountrixTeam repository
+
+2. **Configure Environment Variables**
+   - In Railway project settings, add all required environment variables listed above
+
+3. **Provision MySQL Database**
+   - Add MySQL service to your Railway project
+   - Railway will automatically provide `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`
+   - Map these to your env vars:
+     - `DB_HOST` = `MYSQL_HOST`
+     - `DB_USER` = `MYSQL_USER`
+     - `DB_PASSWORD` = `MYSQL_PASSWORD`
+     - `DB_NAME` = `MYSQL_DATABASE`
+
+4. **Run Database Migrations**
+   - Railway provides a MySQL CLI in the service
+   - Or run migrations manually:
+     ```bash
+     npm run migrate
+     ```
+   - Or via Railway CLI:
+     ```bash
+     railway run mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME < backend/database/schema.sql
+     railway run mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME < backend/database/progress_schema.sql
+     ```
+
+5. **Deploy**
+   - Railway will automatically detect `package.json` and use `npm start`
+   - The app will be available at your Railway-provided domain
+
+### Architecture
+
+- **Single Host**: Express serves both static frontend files and API endpoints
+- **No CORS Required**: Frontend and API are on same origin
+- **Socket.IO**: Attached directly to HTTP server, works behind Railway proxy
+- **File Uploads**: Uses memory storage (multer) - suitable for production at moderate scale
+- **Health Check**: `/healthz` endpoint returns `{ ok: true, version: '2.0.0' }`
+
+### Production Scripts
+
+- `npm start` or `npm run start:backend` - Start the production server
+- `npm run migrate` - Run database migrations (requires MySQL client)
+
+### Troubleshooting Railway Deploy
+
+**Socket.IO not connecting:**
+- Verify `transports: ['websocket', 'polling']` is set in server.js
+- Check Railway logs for Socket.IO connection errors
+
+**Database connection fails:**
+- Verify all DB_* environment variables are set correctly
+- Check that MySQL service is running and accessible
+- Ensure database name matches exactly
+
+**Static files not loading:**
+- Verify `express.static` middleware is configured correctly
+- Check that frontend files are in the repository
+- Ensure fallback route is after API routes
+
+**Health check fails:**
+- Verify `/healthz` endpoint is accessible
+- Check that server is listening on correct port
+
+---
+
 **Happy Collaborating! 🚀**
 
 ---

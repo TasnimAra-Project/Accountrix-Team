@@ -23,11 +23,15 @@ const cronService = require('./services/cronService');
 
 const app = express();
 const server = http.createServer(app);
+// Socket.IO configuration
+// For single-host deployment, CORS is not strictly needed but keeping for compatibility
 const io = socketIo(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
-    }
+    },
+    // Ensure Socket.IO works behind Railway's proxy
+    transports: ['websocket', 'polling']
 });
 
 const PORT = process.env.PORT || 3000;
@@ -46,7 +50,12 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files from frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// API Routes
+// Health check endpoint
+app.get('/healthz', (req, res) => {
+    res.json({ ok: true, version: '2.0.0' });
+});
+
+// API Routes (must be defined BEFORE the catch-all route)
 app.use('/api/auth', authRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/student', studentRoutes);
@@ -105,8 +114,16 @@ io.on('connection', (socket) => {
 // Make io accessible to routes
 app.set('io', io);
 
-// Serve frontend pages
+// Serve frontend pages (specific routes first)
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'intro.html'));
+});
+
+app.get('/intro', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'intro.html'));
+});
+
+app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'login.html'));
 });
 
@@ -122,9 +139,16 @@ app.get('/student/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'student-dashboard.html'));
 });
 
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({ error: 'Route not found' });
+// Fallback route for client-side routing (SPA fallback)
+// This must be LAST, after all API routes and static files
+app.get('*', (req, res) => {
+    // If the request is for an API route that wasn't matched, return 404 JSON
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'API route not found' });
+    }
+    // Otherwise, serve the intro page (or login.html if you prefer)
+    // This allows client-side routing to work
+    res.sendFile(path.join(__dirname, '../frontend', 'intro.html'));
 });
 
 // Start server

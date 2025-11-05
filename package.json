@@ -5,7 +5,9 @@
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js"
+    "start:backend": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "migrate": "node backend/migrate-classes.js && mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME < backend/database/progress_schema.sql"
   },
   "keywords": [
     "education",

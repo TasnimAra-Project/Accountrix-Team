@@ -2,13 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Student-Teacher Collaboration</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Sign Up - AccountrixTeam</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* Mobile touch fixes */
+        * {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .auth-container, .auth-card, form, input, button, a, select {
+            position: relative;
+            z-index: 1;
+        }
+        
+        button, a {
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        
+        input, select {
+            touch-action: manipulation;
+            -webkit-user-select: text;
+            user-select: text;
+            pointer-events: auto;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+            }
+            
+            .auth-card {
+                position: relative;
+                z-index: 10;
+            }
+            
+            button, a, input, select {
+                min-height: 44px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card">
+            <!-- Back to home link for mobile -->
+            <a href="intro.html" class="back-to-home" style="pointer-events: auto; z-index: 100;">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span>Back to Home</span>
+            </a>
+            
             <h1>📚 Create Account</h1>
             
             <div id="errorMessage" class="error-message" style="display: none;"></div>
@@ -17,17 +66,17 @@
             <form id="signupForm">
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input type="text" id="name" name="name" required placeholder="John Doe">
+                    <input type="text" id="name" name="name" required placeholder="John Doe" autocomplete="name">
                 </div>
                 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                    <input type="email" id="email" name="email" required placeholder="your.email@example.com" autocomplete="email">
                 </div>
                 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required placeholder="Minimum 6 characters" minlength="6">
+                    <input type="password" id="password" name="password" required placeholder="Minimum 6 characters" minlength="6" autocomplete="new-password">
                 </div>
                 
                 <div class="form-group">
@@ -43,7 +92,7 @@
             </form>
             
             <div class="auth-link">
-                Already have an account? <a href="/">Login here</a>
+                Already have an account? <a href="login.html" style="pointer-events: auto;">Login here</a>
             </div>
         </div>
     </div>
@@ -85,7 +134,7 @@
                 
                 // Redirect to login after 2 seconds
                 setTimeout(() => {
-                    window.location.href = '/';
+                    window.location.href = 'login.html';
                 }, 2000);
             } catch (error) {
                 errorMessage.textContent = error.message;
