@@ -34,7 +34,7 @@ const io = socketIo(server, {
     transports: ['websocket', 'polling']
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Debug: Check if environment variables are loaded
 console.log('Environment variables loaded:');
@@ -146,14 +146,13 @@ app.get('*', (req, res) => {
     if (req.path.startsWith('/api/')) {
         return res.status(404).json({ error: 'API route not found' });
     }
-    // Otherwise, serve the intro page (or login.html if you prefer)
-    // This allows client-side routing to work
-    res.sendFile(path.join(__dirname, '../frontend', 'intro.html'));
+    // Otherwise, serve the login page (allows client-side routing to work)
+    res.sendFile(path.join(__dirname, '../frontend', 'login.html'));
 });
 
-// Start server
-server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+// Start server - bind to 0.0.0.0 for Render
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
     
     // Start cron jobs for AI progress tracking
     cronService.start();
